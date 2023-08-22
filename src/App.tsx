@@ -1,11 +1,12 @@
-
-
+import { router } from "./routes"
+import { RouterProvider } from 'react-router-dom'
 
 export function App() {
 
   return (
     <>
-      <h1>ksks</h1>
+      <RouterProvider router={router}/>
+      
     </>
   )
 }
