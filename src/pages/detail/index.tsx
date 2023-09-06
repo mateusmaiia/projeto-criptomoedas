@@ -1,6 +1,6 @@
 import { useState, useEffect} from 'react'
 import styles from "./detail.module.css"
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate} from 'react-router-dom'
 
 interface CoinProps{
     symbol: string;
@@ -15,6 +15,7 @@ interface CoinProps{
     formatedMarket: string;
     formatedLowPrice: string;
     formatedHighPrice: string;
+    numberDelta: number;
     error?: string;
 }
 
@@ -22,6 +23,7 @@ export function Detail(){
     const { cripto } = useParams()
     const [detail, setDetail] = useState<CoinProps>()
     const [loading, setLoading] = useState(true)
+    const navigate = useNavigate()
 
     useEffect(() => {
         function getData(){
@@ -29,6 +31,10 @@ export function Detail(){
             .then(response => response.json())
             .then((data: CoinProps ) => {
                 
+            if(data.error){
+                navigate("/")
+            }
+
             const price = Intl.NumberFormat("pt-BR",{
                 style: 'currency',
                 currency: "BRL"
@@ -39,8 +45,8 @@ export function Detail(){
                 formatedPrice: price.format(Number(data.price)),
                 formatedMarket:  price.format(Number(data.market_cap)),
                 formatedLowPrice: price.format(Number(data.low_24h)),
-                formatedHighPrice: price.format(Number(data.high_24h))
-
+                formatedHighPrice: price.format(Number(data.high_24h)),
+                numberDelta: parseFloat(data.delta_24h.replace(",", "."))
             }
 
             setDetail(resultData)
@@ -51,7 +57,7 @@ export function Detail(){
         }
 
         getData()
-    }, [cripto])
+    }, [cripto, navigate])
 
     //se estiver carregando vai mostrar isso aqui, quando carregar o useState loading e mudar para false, dai sim vai exibir o comp de fato
     if(loading){
@@ -79,7 +85,7 @@ export function Detail(){
                 </p>
                 <p>
                     <strong>Delta 24h:</strong>
-                    <span className={Number(detail?.delta_24h) > 0 ? styles.profit : styles.loss }>
+                    <span className={detail?.numberDelta && detail?.numberDelta > 0 ? styles.profit : styles.loss }>
                       {detail?.delta_24h}
                     </span>
                 </p>

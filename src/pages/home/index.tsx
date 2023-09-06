@@ -8,13 +8,14 @@ export function Home(){
 
     interface CoinsProps{
         name: string;
-        delta_24: string;
+        delta_24h: string;
         price: string;
         symbol: string;
         volume_24h: string;
         market_cap: string;
         formatedPrice: string;//as duas novas props
-        formatedMarket: string//as duas novas props
+        formatedMarket: string;//as duas novas props
+        numberDelta: number
     }
 
     interface DataProps{
@@ -45,19 +46,23 @@ export function Home(){
                     const formated = {
                         ...item,
                         formatedPrice: price.format(Number(item.price)),
-                        formatedMarket: price.format(Number(item.market_cap))
+                        formatedMarket: price.format(Number(item.market_cap)),
+                        numberDelta: parseFloat(item.delta_24h.replace(",", "."))
                     }
 
                     return formated;
                 })
 
+                //trocando de número com "," (js le somente número com .) para "."
+                //e depois trocando para número float
+                // console.log(parseFloat(formatResult[0].delta_24.replace(",", ".")))
                 setCoins(formatResult)
             })
             .catch((error) => {
                 console.log(error)
             })
         }
-        // console.log(coins.delta_24)
+      
         getData()
     }, [])
 
@@ -105,8 +110,8 @@ export function Home(){
                          <td className={styles.tdLabel} data-label="Preço">
                             {coin.formatedPrice}
                         </td>
-                        <td className={Number(coin?.delta_24) >= 0 ? styles.tdProfit : styles.tdLoss} data-label="Volume">
-                            <span>{coin?.delta_24}</span>
+                        <td className={coin?.numberDelta >= 0 ? styles.tdProfit : styles.tdLoss} data-label="Volume">
+                            <span>{coin?.delta_24h}</span>
                         </td>
                     </tr>
                     ))}
