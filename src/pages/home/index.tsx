@@ -31,6 +31,7 @@ export function Home(){
             fetch('https://sujeitoprogramador.com/api-cripto/?key=d44eb487d7c73f6e&pref=BRL')
             .then(response => response.json())
             .then((data: DataProps) => {
+                console.log(data)
                 const coinsData = data.coins.slice(0, 15); //recebe apenas 15 moedas
 
                 //FUNÇÃO PRA FORMATAR MOEDA
@@ -105,7 +106,7 @@ export function Home(){
                             {coin.formatedPrice}
                         </td>
                         <td className={Number(coin?.delta_24) >= 0 ? styles.tdProfit : styles.tdLoss} data-label="Volume">
-                            <span>{coin.delta_24}</span>
+                            <span>{coin?.delta_24}</span>
                         </td>
                     </tr>
                     ))}
